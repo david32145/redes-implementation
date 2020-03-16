@@ -16,28 +16,35 @@ void error(char *msg){
 }
 
 int main() { 
+
 	struct sockaddr_in serverAddress; 
 	int sockfd;
 	char *messageSend = "Ola Servidor eu sou o Cliente 123";
 	char messageReceived[TAM_MAX];  
-
-	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+	
+	
 	if ( sockfd < 0 ) 
 		error("Socket não foi criado!\n"); 
+	printf("Socket criado ...\n");
+
+	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
 	bzero(&serverAddress, sizeof(serverAddress));  
 	serverAddress.sin_family = AF_INET; 
 	serverAddress.sin_port = htons(PORT); 
 	serverAddress.sin_addr.s_addr = INADDR_ANY; 
 	
+	
 	int length_RecvFrom, len; 
 
 	sendto(sockfd, messageSend, strlen(messageSend), 0, (struct sockaddr *)&serverAddress, sizeof(serverAddress)); 
-
+			
 	length_RecvFrom = recvfrom(sockfd, messageReceived, TAM_MAX, 0, (struct sockaddr *)&serverAddress, &len); 
 	messageReceived[length_RecvFrom] = '\0'; 
 	printf("Mensagem Recebida: %s\n",messageReceived);
 
 	close(sockfd); 
+	printf("\nDesligando Cliente...\n");
+
 	return 0; 
 }

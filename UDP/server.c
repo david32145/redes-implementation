@@ -24,6 +24,7 @@ int main() {
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if ( sockfd < 0 ) 
 		error("Não foi possivel criar o socket!\n"); 
+	printf("Socket criado...\n");
 
 	bzero(&serverAddress, sizeof(serverAddress));  
 
@@ -35,14 +36,19 @@ int main() {
 	if ( statusBind < 0 )
 		error("A operação de bind falhou!\n");
 	
-	int lenght_clientAddress, length_RecvFrom; 
-	lenght_clientAddress = sizeof(clientAddress); 
+	do{
+		int lenght_clientAddress, length_RecvFrom; 
+		lenght_clientAddress = sizeof(clientAddress); 
 
-	length_RecvFrom = recvfrom(sockfd, messageReceived, TAM_MAX, 0, (struct sockaddr *)&clientAddress, &lenght_clientAddress); 
-	messageReceived[length_RecvFrom] = '\0'; 
-	printf("Mensagem Recebida: %s\n", messageReceived);
+		length_RecvFrom = recvfrom(sockfd, messageReceived, TAM_MAX, 0, (struct sockaddr *)&clientAddress, &lenght_clientAddress); 
+		messageReceived[length_RecvFrom] = '\0'; 
+		printf("Mensagem Recebida: %s\n", messageReceived);
 
-	sendto(sockfd, messageSend, strlen(messageSend), 0, (struct sockaddr *) &clientAddress, lenght_clientAddress);
-	
+		sendto(sockfd, messageSend, strlen(messageSend), 0, (struct sockaddr *) &clientAddress, lenght_clientAddress);
+	}while(1);
+
+	close(sockfd);
+	printf("\nDesligando Servidor...\n");
+
 	return 0; 
 } 
